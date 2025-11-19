@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <title>Assessments IT5C</title>
+  <meta charset='utf-8'>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Gloria+Hallelujah&display=swap" rel="stylesheet">
+  <style>
+  * {
+    font-family:verdana;
+  }
+  body {
+    background-color:white;
+    margin:0;
+  }
+  header {
+    background:#303030;
+    margin:0;
+    padding:10px;
+  }
+  nav ul {
+    padding:0 !important;
+    margin:0;
+    text-align:center;
+  }
+  nav ul li {
+    display:inline-block;
+    margin:0 2px;
+  }
+  main {
+    width:90%;
+    margin:auto;
+    margin-bottom:100px;
+  }
+  h1 {
+    text-align:center;
+    font-weight:normal;
+    font-size:40px;
+    margin:0;
+  }
+  h2 {
+    text-decoration:underline;
+    margin:10px 0;
+  }
+  #showOnJS {
+    margin:20px;
+    position:fixed;
+    right:0;
+    top:0;
+    z-index:1;
+  }
+  .week {
+    text-align:right;
+    color:#4287f5;
+    font-family:"Gloria Hallelujah", verdana;
+    /* font-size:24px; */
+    position:absolute;
+    right:0;
+    margin-top:-10px;
+  }
+  h3 {
+    color:#0a3269;
+    position:relative;
+    margin:10px 0;
+  }
+  ul {
+    padding-left:40px;
+  }
+  hr {
+    border:1px solid #152457;
+  }
+  footer {
+    background:#303030;
+    text-align:center;
+    /* font-variant:small-caps; */
+    padding:5px 0;
+    position:fixed;
+    left:0;
+    bottom:0;
+    width:100%;
+  }
+  header, nav *, footer * {
+    color:white;
+  }
+  .split {
+    width:50%;
+    display:inline-block;
+  }
+  #name {
+    text-align:right;
+    position:absolute;
+    right:0;
+  }
+  </style>
+  <script src="script.js"></script>
+</head>
+<body>
+  <header id='top'>
+    <h1>How to Pass</h1>
+    <nav>
+      <ul>
+        <li><a href='#17-10'>Week 13</a></li>
+        <li><a href='#24-10'>Week 14</a></li>
+        <li><a href='#26-10'>Week 15</a></li>
+      </ul>
+    </nav>
+  </header>
+  <div style="display:none;" id="showOnJS">
+    <select id="class" onchange="somefunction()">
+      <option value="0">None</option>
+      <option value="1">App Development</option>
+      <option value="2">Data Objects</option>
+      <option value="3">Manage ICT Projects</option>
+      <option value="4">Website Design</option>
+      <option value="5">Windows Server</option>
+      <option value="6">Wordpress CMS</option>
+    </select>
+  </div>
+  <script type="text/javascript">
+  document.getElementById('showOnJS').style.display='block';
+  </script>
+  <main>
+    <h2>Previous Assessments</h2>
+    <ul>
+      <li>Manage ICT<ul>
+        <li>Task 2 Part A</li>
+        <li>Task 2 Part B</li>
+        <li>Task 2 Part C</li>
+        <li>Task 2 Part D &amp; <strong>in-class</strong> Presentation</li>
+      </ul></li>
+      <li>Data Objects<ul>
+        <li>Assessment 1 Stage 1 (group)</li>
+        <li>Assessment 1 Stage 2 (individual)</li>
+      </ul></li>
+      <li>Website Design<ul>
+        <li>Assessment 1</li>
+        <li>Assessment 2</li>
+      </ul></li>
+      <li>Windows Server<ul><li>Assessment 1 (group)</li></ul></li>
+      <li>Wordpress CMS<ul>
+        <li>Assessment 1</li>
+        <li>Assessment 1.1 Quiz <strong>in-class</strong></li>
+      </ul></li>
+      <li>App Development<ul>
+        <li>Task 1 Activity 1 (week 3)</li>
+        <li>Task 1 Activity 2 (week 5)</li>
+        <li>Task 1 Activity 3 (week 8)</li>
+        <li>Task 2 Stage 1 (group)</li>
+      </ul></li>
+    </ul>
+    <h2 class="split">Future Assessments</h2><h2 class="split">Resubmissions</h2>
+    <h3 id='17-10'>17th October<span class="week">Week 13</span></h3>
+    <ul>
+      <li class="manage">Manage ICT<ul><li>Task 2 Part E</li></ul></li>
+    </ul>
+    <hr>
+    <h3 id='24-10'>24th October<span class="week">Week 14</span></h3>
+    <ul>
+      <li class="data">Data Objects<ul><li>Assessment 1 Stage 3 (group)</li></ul></li>
+    </ul>
+    <hr>
+    <h3 id='26-10'>26th October<span class="week">Week 15</span></h3>
+    <ul>
+      <li class="data">Data Objects<ul><li>Assessment 2 Test <strong>in-class</strong></li></ul></li>
+    </ul>
+    <!-- <hr> -->
+    <h3 id='28-10'>28th October</h3>
+    <ul>
+      <li class="manage">Manage ICT<ul><li>Task 1 Test <strong>in-class</strong></li></ul></li>
+      <li class="wordpress">Wordpress CMS<ul><li>Assessment 2 Demonstration <strong>in-class</strong></li></ul></li>
+    </ul>
+    <!-- <hr> -->
+    <h3 id='31-10'>31st October</h3>
+    <ul>
+      <li class="windows">Windows Server<ul><li>Assessment 2 (group)</li></ul></li>
+      <li class="website">Website Design<ul><li>Assessment 3</li></ul></li>
+      <li class="wordpress">Wordpress CMS<ul><li>Assessment 2</li></ul></li>
+      <li class="app-dev">App Development<ul><li>Task 2 Stage 2 (group)</li></ul></li>
+    </ul>
+  </main>
+  <footer><a href='#top'>Go to Top</a><span id="name">discord: macymouse#9804</span></footer>
+</body>
+</html>

@@ -1,0 +1,16 @@
+{
+    "excel_path": "TournamentData.xlsx",
+    "excel_save": "JudgeAvailabilityHelper.xlsm",
+    "match_time": {
+        "m": 3,
+        "s": 30
+    },
+    "preparation_time": 6,
+    "interview_time": 3,
+    "open_on_script": true,
+
+    "use_number": true,
+    "folder-sheets": "./data/",
+    "folder-jsons": "./json/",
+    "sheets": ["V5-Division-1", "V5-Division-2", "IQ-Division-1", "IQ-Division-2"]
+}
