@@ -9,25 +9,30 @@ function checkCookie() {
       break;
     }
   }
+  
   if (login) {
     loginTrue();
-    // alert("Welcome back!");
+    alert("Welcome back!");
   }
 }
 
 function login(passphrase) {
   if (passphrase.trim() === "VEXhelperYIPPEE") {
-    document.cookie = "pass=afo83brws8egh4up28q"; 
+    document.cookie = "pass=afo83brws8egh4up28q; path=/; max-age=86400";
     loginTrue();
-    alert("Hello!");
+    // alert("Hello!");
   } else {
-    alert("Wrong passphrase!");
+    // alert("Wrong passphrase!");
   }
 }
 
 function loginTrue() {
   // load the page
+  document.getElementById('loginForm').style.display = "none";
 
+  // generate main
+
+  document.getElementById('main').style.display = "block";
 }
 
 
@@ -38,7 +43,7 @@ function getData() {
 }
 
 
-// modify this too
+// modify this too - chatgpt
 function createTableInMain(data) {
   let main = document.querySelector("main");
   if (!main) {

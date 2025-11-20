@@ -18,13 +18,12 @@
         <h1>VEX Interview Availability</h1>
     </header>
 
-    <script>checkCookie();</script>
-    <form onsubmit="event.preventDefault()">
-    <input type="text" id="formValueId" name="valueId"/>
-    <input type="button" onclick="login(this.form.valueId.value)" value="login"/>
+    <form id="loginForm" onsubmit="event.preventDefault()">
+        <input type="text" id="formValueId" name="valueId"/>
+        <input type="button" onclick="login(this.form.valueId.value)" value="login"/>
     </form>
 
-    <main id="main">
+    <main id="main" style="display:none">
 
         <!-- GENERATE THIS -->
         <div id="collapse-box">
@@ -59,25 +58,24 @@
             </div>
         </div>
 
-        <table>
+        <!-- <table>
             <tr>
                 <th>Team</th>
                 <th>Status</th>
                 <th>Next Match</th>
                 <th>Done</th>
             </tr>
-            <!-- GENERATE TABLE HERE -->
-             <tr>
+            <tr>
                 <td>3477D</td>
                 <td>AVAILABLE</td>
                 <td id="timer">12:35</td>
                 <td><input type="checkbox" value="3477D"></td>
              </tr>
-        </table>
+        </table> -->
     </main>
 
     <footer>
-        <span id="discordtag">project by macymouse</span>
+        <span id="discordtag">project by <a href="https://www.linkedin.com/in/macy-regan/" target="_blank">macymouse</a></span>
     </footer>
 
     <!-- Collapsible box from w3schools -->
@@ -98,6 +96,7 @@
         }
     </script>
 
+    <script>checkCookie();</script>
     <!-- timer THIS IS WRONG AND GPT -->
     <script>
         const times = ["1:13am", "1:16am", "1:35am"]; // your list of target times
