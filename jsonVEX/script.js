@@ -9,7 +9,7 @@ function checkCookie() {
       break;
     }
   }
-  
+
   if (login) {
     loginTrue();
     alert("Welcome back!");
@@ -37,11 +37,20 @@ function loginTrue() {
 
 
 
-function getData() {
-  // array of json lists?
-
+async function getData() {
+    const response = await fetch("test.json");
+    const json = await response.json();
 }
 
+// Source - https://stackoverflow.com/a
+// Posted by aloisdg, modified by community. See post 'Timeline' for change history
+// Retrieved 2025-11-22, License - CC BY-SA 4.0
+
+async function printJSON() {
+    const response = await fetch("test.json");
+    const json = await response.json();
+    console.log(json);
+}
 
 // modify this too - chatgpt
 function createTableInMain(data) {
@@ -99,6 +108,48 @@ function createTableInMain(data) {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+function updateCountdowns() {
+  const now = new Date();
+
+  document.querySelectorAll(".countdown").forEach(cdCell => {
+    const endTime = cdCell.dataset.endtime;
+
+    if (endTime === "done") {
+      cdCell.textContent = "-";
+      return;
+    }
+
+    const diff = new Date(endTime) - now;
+
+    if (diff <= 0) {
+      // TODO: function to find next time
+      cdCell.dataset.endtime = "done";
+      cdCell.textContent = "-";
+
+    } else {
+      const seconds = Math.floor((diff / 1000) % 60);
+      const minutes = Math.floor((diff / (1000 * 60)));
+
+      cdCell.textContent = `${minutes}m ${seconds}s`;
+    }
+  });
+}
+
+setInterval(updateCountdowns, 1000);
+updateCountdowns();
 
 
 
