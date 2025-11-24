@@ -86,3 +86,8 @@ for dfDict in df_list:
         json.dump(match_dict, j, indent=4)
     # df_data_m = pd.DataFrame(dict([(k, pd.Series(v)) for k, v in match_dict.items()]))
 
+
+with open(config["folder-jsons"] + "divisions.json", "w") as j:
+    json.dump(excel_files, j, indent=4)
+
+

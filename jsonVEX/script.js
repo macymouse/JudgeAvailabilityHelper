@@ -26,83 +26,165 @@ function login(passphrase) {
   }
 }
 
-function loginTrue() {
+async function loginTrue() {
   // load the page
   document.getElementById('loginForm').style.display = "none";
 
   // generate main
-
+  await getData();
+  generateMain();
   document.getElementById('main').style.display = "block";
 }
 
-
+let divisions = [];
+let mjsons = [];
+let tjsons = [];
 
 async function getData() {
-    const response = await fetch("test.json");
-    const json = await response.json();
+  await fetch('./data/divisions.json')
+  .then(r => r.json())
+  .then(divs => {
+      divisions = divs;
+      console.log("divs");
+      console.log(divisions);
+  });
+
+  for (i = 0; i < divisions.length; ++i) {
+    let div = divisions[i];
+    const mresponse = await fetch("./data/m" + div + ".json");
+    const mjson = await mresponse.json();
+    const tresponse = await fetch("./data/t" + div + ".json");
+    const tjson = await tresponse.json();
+    mjsons.push(mjson);
+    tjsons.push(tjson);
+  }
+  console.log(mjsons);
+  console.log(tjsons);
 }
 
-// Source - https://stackoverflow.com/a
-// Posted by aloisdg, modified by community. See post 'Timeline' for change history
-// Retrieved 2025-11-22, License - CC BY-SA 4.0
-
-async function printJSON() {
-    const response = await fetch("test.json");
-    const json = await response.json();
-    console.log(json);
-}
-
-// modify this too - chatgpt
-function createTableInMain(data) {
+function generateMain() {
   let main = document.querySelector("main");
-  if (!main) {
-    main = document.createElement("main");
-    document.body.appendChild(main);
+
+  // Generate Drop-down
+  let brT = document.createElement("br");
+
+  
+  // Collapsible box from w3schools
+  let divCollapseBox = document.createElement("div");
+  divCollapseBox.id = "collapse-box";
+
+  let button = document.createElement("button");
+  button.type = "button";
+  button.className = "collapsible";
+  button.innerHTML = "+ Pick Event Division";
+  button.addEventListener("click", function() {
+      this.classList.toggle("active");
+      var content = this.nextElementSibling;
+      if (content.style.display === "block") {
+      content.style.display = "none";
+      } else {
+      content.style.display = "block";
+      }
+  });
+
+  let divCheckboxes = document.createElement("div");
+  divCheckboxes.className = "content";
+  for (i = 0; i < divisions.length; ++i) {
+    let divi = divisions[i];
+
+    let input = document.createElement("input");
+    input.type = "checkbox";
+    input.id = divi;
+    input.name = divi;
+    input.value = divi;
+    input.onchange= () => handleEventChange(input);
+
+    let label = document.createElement("label");
+    label.htmlFor = divi;
+    label.innerHTML = divi.replace(/-/g, " ");
+
+    let br = brT.cloneNode(true);
+
+    divCheckboxes.appendChild(input);
+    divCheckboxes.appendChild(label);
+    divCheckboxes.appendChild(br);
   }
 
-  // Create table elements
-  const table = document.createElement("table");
-  table.style.borderCollapse = "collapse";
-  table.style.width = "100%";
+  divCollapseBox.appendChild(button);
+  divCollapseBox.appendChild(divCheckboxes);
 
-  // Helper to create cells with consistent styling
-  const createCell = (text, isHeader = false) => {
-    const cell = document.createElement(isHeader ? "th" : "td");
-    cell.textContent = text;
-    cell.style.border = "1px solid #ccc";
-    cell.style.padding = "8px";
-    return cell;
-  };
+  main.appendChild(divCollapseBox);
 
-  // If data is array of objects → extract headers
-  if (Array.isArray(data) && data.length && typeof data[0] === "object" && !Array.isArray(data[0])) {
-    const headerRow = document.createElement("tr");
-    Object.keys(data[0]).forEach(key => {
-      headerRow.appendChild(createCell(key, true));
-    });
-    table.appendChild(headerRow);
+  // Generate grid
+  let gridContainer = document.createElement("div");
+  gridContainer.className = "grid-container";
 
-    data.forEach(rowObj => {
-      const row = document.createElement("tr");
-      Object.values(rowObj).forEach(value => {
-        row.appendChild(createCell(value));
-      });
-      table.appendChild(row);
-    });
+  // Header row
+  let gridRow = document.createElement("div");
+  gridRow.className = "grid-row";
 
-  } else {
-    // Array of arrays
-    data.forEach((rowArr, rowIndex) => {
-      const row = document.createElement("tr");
-      rowArr.forEach(cell => {
-        row.appendChild(createCell(cell, rowIndex === 0));
-      });
-      table.appendChild(row);
-    });
+  let gridHeader = document.createElement("div");
+  gridHeader.className = "grid-item grid-header";
+  gridHeader.innerHTML = "Division";
+  gridRow.appendChild(gridHeader);
+
+  gridHeader = document.createElement("div");
+  gridHeader.className = "grid-item grid-header";
+  gridHeader.innerHTML = "Team";
+  gridRow.appendChild(gridHeader);
+
+  gridHeader = document.createElement("div");
+  gridHeader.className = "grid-item grid-header";
+  gridHeader.innerHTML = "Status";
+  gridRow.appendChild(gridHeader);
+
+  gridHeader = document.createElement("div");
+  gridHeader.className = "grid-item grid-header";
+  gridHeader.innerHTML = "Next Match";
+  gridRow.appendChild(gridHeader);
+
+  gridContainer.appendChild(gridRow);
+
+  // Team rows
+  for (i = 0; i < divisions.length; ++i) {
+    let divi = divisions[i];
+    let teams = tjsons[i];
+
+    let rowDivTemplate = document.createElement("div");
+    rowDivTemplate.className = "grid-row " + divi;
+
+    let cellTemplate = document.createElement("div");
+    cellTemplate.className = "grid-item";
+
+    for (j = 0; j < teams.length; ++j) {
+      // for each team, generate row
+      let rowDiv = rowDivTemplate.cloneNode(true);
+
+      let divCell = cellTemplate.cloneNode(true);
+      divCell.innerHTML = divi.replace(/-/g, " ");
+      rowDiv.appendChild(divCell);
+
+      let teamCell = cellTemplate.cloneNode(true);
+      teamCell.innerHTML = teams[j].Number;                 // NOTE: change this to team name if you prefer
+      rowDiv.appendChild(teamCell);
+
+      let statusCell = cellTemplate.cloneNode(true);
+      statusCell.className = "grid-item status";
+      rowDiv.appendChild(statusCell);
+
+      let countdownCell = cellTemplate.cloneNode(true);
+      countdownCell.className = "grid-item countdown";
+      countdownCell.dataset.endtime = "done";
+      
+      // TODO: function to find next time
+      
+      rowDiv.appendChild(countdownCell);
+
+      gridContainer.appendChild(rowDiv);
+    }
   }
 
-  // Append table to <main>
-  main.appendChild(table);
+  main.appendChild(gridContainer);
 }
 
 
@@ -114,18 +196,15 @@ function createTableInMain(data) {
 
 
 
-
-
-
-
-
-
-
+// This works but has a TODO
 function updateCountdowns() {
   const now = new Date();
 
   document.querySelectorAll(".countdown").forEach(cdCell => {
     const endTime = cdCell.dataset.endtime;
+
+    // update based on time
+    const statusCell = cdCell.previousElementSibling;
 
     if (endTime === "done") {
       cdCell.textContent = "-";
@@ -136,6 +215,7 @@ function updateCountdowns() {
 
     if (diff <= 0) {
       // TODO: function to find next time
+
       cdCell.dataset.endtime = "done";
       cdCell.textContent = "-";
 
