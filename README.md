@@ -8,10 +8,13 @@ Progress:
 * ~~Very basic html display without integration.~~
 * Basic login via javascript: note this is easy to bypass by reading the script.js and acts only as a simple wall
 * HTML generation based on provided json files.
-
-Next steps:
 * Countdown to next match and status updates.
 * Functional checkbox to filter by division.
+
+Next steps:
+* Configuration variables.
+* JSON implementation documentation and demo.
+* API implementation (one day?).
 
 Going to have two projects in one achieving the same goal because I'm not confident in my skills to implement the VEX TM API just yet. Directory jsonVEX will be providing a static webpage that generates based on JS, with jsons generated from a Python script. Directory apiVEX will be providing a React webapp connecting to the VEX TM API.
 

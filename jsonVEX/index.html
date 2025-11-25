@@ -53,7 +53,7 @@
             <div class="grid-row divion">
                 <div class="grid-item">tres</div>
                 <div class="grid-item">tres</div>
-                <div class="grid-item countdown" data-endtime="2025-11-22T22:30:00">tres</div>
+                <div class="grid-item countdown" data-endtime="2025-11-22T22:30:00" data-division="" data-team="">tres</div>
                 <div class="grid-item countdown" data-endtime="2025-11-22T22:00:00">tres</div>
             </div>
         </div> -->
@@ -80,65 +80,5 @@
 
 
     <script>checkCookie();</script>
-    <!-- timer THIS IS WRONG AND GPT -->
-    <script>
-        const times = ["1:13am", "1:16am", "1:35am"]; // your list of target times
-        const timerElement = document.getElementById('timer');
-
-        let index = 0;
-        let interval;
-
-        function parseTime(timeStr) {
-        const match = timeStr.match(/(\d+):(\d+)(am|pm)/i);
-        if (!match) return null;
-
-        let [_, hour, minute, period] = match;
-        hour = parseInt(hour);
-        minute = parseInt(minute);
-
-        if (period.toLowerCase() === 'pm' && hour < 12) hour += 12;
-        if (period.toLowerCase() === 'am' && hour === 12) hour = 0;
-
-        const now = new Date();
-        const target = new Date(now);
-        target.setHours(hour, minute, 0, 0);
-
-        // if time already passed today, set it for tomorrow
-        if (target < now) target.setDate(target.getDate() + 1);
-
-        return target;
-        }
-
-        function startCountdown() {
-        if (index >= times.length) {
-            timerElement.textContent = "-";
-            clearInterval(interval);
-            return;
-        }
-
-        const target = parseTime(times[index]);
-        if (!target) return;
-
-        clearInterval(interval);
-        interval = setInterval(() => {
-            const now = new Date();
-            const diff = target - now;
-            const totalSeconds = Math.floor(diff / 1000);
-
-            if (totalSeconds <= 0) {
-            index++; // move to next time
-            startCountdown(); // start next countdown
-            return;
-            }
-
-            const mins = Math.floor(totalSeconds / 60);
-            const secs = totalSeconds % 60;
-            timerElement.textContent = 
-            `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
-        }, 1000);
-        }
-
-        startCountdown();
-    </script>
 </body>
 </html>

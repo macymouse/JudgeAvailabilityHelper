@@ -1,3 +1,13 @@
+// How many milliseconds minimum to complete an interview before a match starts?
+// e.g., 10 minutes = 10 * 60 seconds * 1000 milliseconds = 600000
+const prepTime = 600000;
+// How many milliseconds is a match?
+// e.g., 3 minutes 30 seconds = (3 * 60 seconds + 30) * 1000 milliseconds = 210000
+const matchDuration = 210000;
+
+
+
+
 function checkCookie() {
   let login = false;
   let cookies = document.cookie.split(';');
@@ -20,9 +30,8 @@ function login(passphrase) {
   if (passphrase.trim() === "VEXhelperYIPPEE") {
     document.cookie = "pass=afo83brws8egh4up28q; path=/; max-age=86400";
     loginTrue();
-    // alert("Hello!");
   } else {
-    // alert("Wrong passphrase!");
+    alert("Wrong passphrase!");
   }
 }
 
@@ -37,26 +46,25 @@ async function loginTrue() {
 }
 
 let divisions = [];
-let mjsons = [];
-let tjsons = [];
+let mjsons = {};
+let tjsons = {};
+let countdowns = [];
 
 async function getData() {
   await fetch('./data/divisions.json')
   .then(r => r.json())
   .then(divs => {
       divisions = divs;
-      console.log("divs");
-      console.log(divisions);
   });
 
   for (i = 0; i < divisions.length; ++i) {
     let div = divisions[i];
-    const mresponse = await fetch("./data/m" + div + ".json");
+    const mresponse = await fetch(`./data/m${div}.json?ts=${Date.now()}`);
     const mjson = await mresponse.json();
-    const tresponse = await fetch("./data/t" + div + ".json");
+    const tresponse = await fetch(`./data/t${div}.json?ts=${Date.now()}`);
     const tjson = await tresponse.json();
-    mjsons.push(mjson);
-    tjsons.push(tjson);
+    mjsons[div] = mjson;
+    tjsons[div] = tjson;
   }
   console.log(mjsons);
   console.log(tjsons);
@@ -97,6 +105,7 @@ function generateMain() {
     input.id = divi;
     input.name = divi;
     input.value = divi;
+    input.checked = true;
     input.onchange= () => handleEventChange(input);
 
     let label = document.createElement("label");
@@ -148,7 +157,7 @@ function generateMain() {
   // Team rows
   for (i = 0; i < divisions.length; ++i) {
     let divi = divisions[i];
-    let teams = tjsons[i];
+    let teams = tjsons[divi];
 
     let rowDivTemplate = document.createElement("div");
     rowDivTemplate.className = "grid-row " + divi;
@@ -174,9 +183,10 @@ function generateMain() {
 
       let countdownCell = cellTemplate.cloneNode(true);
       countdownCell.className = "grid-item countdown";
-      countdownCell.dataset.endtime = "done";
-      
-      // TODO: function to find next time
+      countdownCell.dataset.endtime = "-";
+      countdownCell.dataset.team = teams[j].Number;
+      countdownCell.dataset.div = divi;
+      countdownCell.dataset.lastMatch = "none";
       
       rowDiv.appendChild(countdownCell);
 
@@ -185,107 +195,120 @@ function generateMain() {
   }
 
   main.appendChild(gridContainer);
+  countdowns = Array.from(document.querySelectorAll(".countdown"));
+
+  setInterval(updateCountdowns, 1000);
+  updateCountdowns();
 }
 
-
-
-
-
-
-
-
-
-
-// This works but has a TODO
 function updateCountdowns() {
   const now = new Date();
 
-  document.querySelectorAll(".countdown").forEach(cdCell => {
-    const endTime = cdCell.dataset.endtime;
-
+  countdowns.forEach(cdCell => {
+    let endTime = cdCell.dataset.endtime;
+    
     // update based on time
     const statusCell = cdCell.previousElementSibling;
+    const team = cdCell.dataset.team;
+    const div = cdCell.dataset.div;
 
+
+    let matches = mjsons[div][team];
+
+    
+    // Initialise time
+    if (endTime === "-") {
+      [cdCell.dataset.endtime, cdCell.dataset.lastMatch] = findTime(matches, now);
+
+      endTime = cdCell.dataset.endtime;
+    }
+    let lastDiff = -1;
+    
+    // When done, stop.
     if (endTime === "done") {
       cdCell.textContent = "-";
+      
+      if (cdCell.dataset.lastMatch !== "none") {
+        lastDiff = now - new Date(cdCell.dataset.lastMatch);
+      }
+
+      if (lastDiff >= 0 && lastDiff < matchDuration) {
+        statusCell.innerHTML = "IN MATCH";
+      } else {
+        statusCell.innerHTML = "AVAILABLE";
+      }
+
       return;
     }
-
+    
+    // Else, we find the time.
     const diff = new Date(endTime) - now;
 
     if (diff <= 0) {
-      // TODO: function to find next time
-
-      cdCell.dataset.endtime = "done";
+      [cdCell.dataset.endtime, cdCell.dataset.lastMatch] = findTime(matches, now);
       cdCell.textContent = "-";
 
     } else {
+      // Countdown
       const seconds = Math.floor((diff / 1000) % 60);
       const minutes = Math.floor((diff / (1000 * 60)));
 
       cdCell.textContent = `${minutes}m ${seconds}s`;
+      
+      
+      if (cdCell.dataset.lastMatch !== "none") {
+        lastDiff = now - new Date(cdCell.dataset.lastMatch);
+      }
+
+      //statusCell
+      if (lastDiff >= 0 && lastDiff < matchDuration) {
+        statusCell.innerHTML = "IN MATCH";
+      } else if (diff < prepTime) {
+        statusCell.innerHTML = "MATCH SOON";
+      } else {
+        statusCell.innerHTML = "AVAILABLE";
+      }
+
     }
   });
 }
 
-setInterval(updateCountdowns, 1000);
-updateCountdowns();
 
 
 
 
 
+function findTime(matches, now) {
 
+  let lastMatch = "none";
 
+  for (i = 0; i < matches.length; ++i) {
+    let matchTime = matches[i].replace(" ", "T");
+    console.log(matchTime);
+    let diff = new Date(matchTime) - now;
 
+    if (diff > 0) {
+      return [matchTime, lastMatch];
+    }
 
-
-// will be modifying this to suit needs
+    lastMatch = matchTime;
+  }
+  console.log("done");
+  return ["done", lastMatch];
+}
 
 function handleEventChange(checkbox) {
   if (checkbox.checked) {
     console.log(`Checked: ${checkbox.value}`);
-    // if(value == 1){
-    //     highlight('app-dev');
-    // }
+    var all = document.getElementsByClassName(checkbox.value);
+    for (var i = 0; i < all.length; i++) {
+      all[i].style.display = '';
+    }
   } else {
     console.log(`Unchecked: ${checkbox.value}`);
-    // if(value == 1){
-    //     unhighlight();
-    // }
-  }
-}
-
-function highlight($class) {
-  var all = document.getElementsByClassName($class);
-  for (var i = 0; i < all.length; i++) {
-    all[i].style.color = 'red';
-  }
-}
-
-function unhighlight() {
-  var all = document.getElementsByClassName('app-dev');
-  for (var i = 0; i < all.length; i++) {
-    all[i].style.color = 'black';
-  }
-  all = document.getElementsByClassName('data');
-  for (var i = 0; i < all.length; i++) {
-    all[i].style.color = 'black';
-  }
-  all = document.getElementsByClassName('manage');
-  for (var i = 0; i < all.length; i++) {
-    all[i].style.color = 'black';
-  }
-  all = document.getElementsByClassName('website');
-  for (var i = 0; i < all.length; i++) {
-    all[i].style.color = 'black';
-  }
-  all = document.getElementsByClassName('windows');
-  for (var i = 0; i < all.length; i++) {
-    all[i].style.color = 'black';
-  }
-  all = document.getElementsByClassName('wordpress');
-  for (var i = 0; i < all.length; i++) {
-    all[i].style.color = 'black';
+    var all = document.getElementsByClassName(checkbox.value);
+    for (var i = 0; i < all.length; i++) {
+      all[i].style.display = 'none';
+    }
   }
 }
